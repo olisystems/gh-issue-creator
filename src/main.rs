@@ -26,20 +26,23 @@ async fn main() {
 
             // Read tasks and generate description text
             match file_handler::read_and_generate_description(&config.json_file_path) {
-                Ok((title, description_text)) => {
-                    // Create issue and add to project
-                    match issue_creator
-                        .create_issue_and_add_to_project(
-                            &repo_id,
-                            &project_id,
-                            &title,
-                            &description_text,
-                        )
-                        .await
-                    {
-                        Ok(_) => info!("🎉 Successfully created issue and added to project."),
-                        Err(e) => eprintln!("❌ ERROR: Error creating issue and adding to project: {}", e),
+                Ok(tasks) => {
+                    for task in tasks {
+                        // Create issue and add to project
+                        match issue_creator
+                            .create_issue_and_add_to_project(
+                                &repo_id,
+                                &project_id,
+                                &task.0,
+                                &task.1,
+                            )
+                            .await
+                        {
+                            Ok(_) => info!("🎉 Successfully created issue and added to project."),
+                            Err(e) => eprintln!("❌ ERROR: Error creating issue and adding to project: {}", e),
+                        }
                     }
+                    info!("💯 All tasks have been processed successfully.");
                 }
                 Err(e) => eprintln!("❌ ERROR: Error reading tasks from file: {}", e),
             }
