@@ -2,7 +2,7 @@ use dotenv::dotenv;
 use log::{error, info};
 use std::env;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Config {
     pub gh_access_token: String,
     pub gh_graphql_api_url: String,
