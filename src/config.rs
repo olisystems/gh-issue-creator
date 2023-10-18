@@ -9,6 +9,7 @@ pub struct Config {
     pub repository_name: String,
     pub repository_owner: String,
     pub json_file_path: String,
+    pub project_number: i32,
 }
 
 impl Config {
@@ -56,6 +57,14 @@ impl Config {
             }
         };
 
+        let project_number = match env::var("PROJECT_NUMBER") {
+            Ok(val) => val.parse::<i32>().unwrap(),
+            Err(_) => {
+                error!("PROJECT_NUMBER not found.");
+                return Err("PROJECT_NUMBER not found.");
+            }
+        };
+
         info!("Environment variables read successfully.");
 
         Ok(Config {
@@ -64,6 +73,7 @@ impl Config {
             repository_name,
             repository_owner,
             json_file_path,
+            project_number,
         })
     }
 }
