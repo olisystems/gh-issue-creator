@@ -6,12 +6,12 @@ use crate::description;
 pub fn read_and_generate_description(file_path: &str) -> Result<(String, String), Error> {
     let file_content = match fs::read_to_string(file_path) {
         Ok(content) => content,
-        Err(_) => return Err(Error::new(ErrorKind::NotFound, "File not found")),
+        Err(_) => return Err(Error::new(ErrorKind::NotFound, "File not found 📂")),
     };
 
     let tasks: Vec<Value> = match serde_json::from_str(&file_content) {
         Ok(json) => json,
-        Err(_) => return Err(Error::new(ErrorKind::InvalidData, "Invalid JSON")),
+        Err(_) => return Err(Error::new(ErrorKind::InvalidData, "Invalid JSON 🙁")),
     };
 
     let mut description_text = String::new();

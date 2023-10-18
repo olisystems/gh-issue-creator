@@ -51,18 +51,18 @@ impl GitHub {
                         Ok((repo_id.to_string(), project_id.to_string()))
                     }
                     _ => {
-                        error!("Failed to fetch repository ID and/or project ID.");
+                        error!("❌ ERROR: Failed to fetch repository ID and/or project ID.");
                         Err(format!(
-                            "Failed to fetch repository ID and/or project ID. Response: {}",
+                            "❌ ERROR: Failed to fetch repository ID and/or project ID. Response: {}",
                             res_text
                         ))
                     }
                 }
             }
             Err(e) => {
-                error!("Failed to send request to GitHub GraphQL API.");
+                error!("❌ ERROR: Failed to send request to GitHub GraphQL API.");
                 Err(format!(
-                    "Failed to send request to GitHub GraphQL API. Error: {}",
+                    "❌ ERROR: Failed to send request to GitHub GraphQL API. Error: {}",
                     e
                 ))
             }

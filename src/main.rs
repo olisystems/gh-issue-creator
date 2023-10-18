@@ -21,8 +21,8 @@ async fn main() {
 
     match github.get_repo_and_project_id().await {
         Ok((repo_id, project_id)) => {
-            info!("Repository ID: {}", repo_id);
-            info!("Project ID: {}", project_id);
+            info!("🔑 Repository ID: {}", repo_id);
+            info!("🔑 Project ID: {}", project_id);
 
             // Read tasks and generate description text
             match file_handler::read_and_generate_description(&config.json_file_path) {
@@ -37,13 +37,13 @@ async fn main() {
                         )
                         .await
                     {
-                        Ok(_) => info!("Successfully created issue and added to project."),
-                        Err(e) => eprintln!("Error creating issue and adding to project: {}", e),
+                        Ok(_) => info!("🎉 Successfully created issue and added to project."),
+                        Err(e) => eprintln!("❌ ERROR: Error creating issue and adding to project: {}", e),
                     }
                 }
-                Err(e) => eprintln!("Error reading tasks from file: {}", e),
+                Err(e) => eprintln!("❌ ERROR: Error reading tasks from file: {}", e),
             }
         }
-        Err(e) => eprintln!("Error: {}", e),
+        Err(e) => eprintln!("❌ ERROR: Error: {}", e),
     }
 }

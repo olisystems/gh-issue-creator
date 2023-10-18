@@ -57,7 +57,7 @@ impl IssueCreator {
                 let res_text = response.text().await.unwrap();
                 let json: serde_json::Value = serde_json::from_str(&res_text).unwrap();
                 if let Some(issue_id) = json["data"]["createIssue"]["issue"]["id"].as_str() {
-                    info!("Successfully created issue: {}", issue_id);
+                    info!("✅ Issue {} created successfully!", title);
 
                     // Then, add the issue to the project
                     let add_to_project_mutation = json!({
@@ -82,14 +82,14 @@ impl IssueCreator {
 
                     match res {
                         Ok(_) => {
-                            info!("Successfully added issue {} to project.", issue_id);
+                            info!("🚀 Issue {} added to the project.", title);
                             Ok(())
                         }
                         Err(e) => {
-                            error!("Failed to add issue {} to project.", issue_id);
+                            error!("Failed to add issue {} to project.", title);
                             Err(format!(
                                 "Failed to add issue {} to project. Error: {}",
-                                issue_id, e
+                                title, e
                             ))
                         }
                     }
@@ -99,7 +99,7 @@ impl IssueCreator {
                 }
             }
             Err(e) => {
-                error!("Failed to send request to GitHub GraphQL API.");
+                error!("❌ ERROR: Failed to send request to GitHub GraphQL API.");
                 Err(format!(
                     "Failed to send request to GitHub GraphQL API. Error: {}",
                     e
