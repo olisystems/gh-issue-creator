@@ -6,6 +6,7 @@ mod config;
 mod description;
 mod file_handler;
 mod github;
+mod issue_creator;
 
 #[tokio::main]
 async fn main() {
@@ -15,8 +16,8 @@ async fn main() {
     dotenv().ok();
 
     let config = config::Config::new().unwrap();
-    let json_file_path = config.json_file_path.clone();
-    let github = github::GitHub::new(config);
+    let github = github::GitHub::new(config.clone());
+    let issue_creator = issue_creator::IssueCreator::new(config.clone());
 
     match github.get_repo_and_project_id().await {
         Ok((repo_id, project_id)) => {
@@ -24,8 +25,22 @@ async fn main() {
             info!("Project ID: {}", project_id);
 
             // Read tasks and generate description text
-            match file_handler::read_and_generate_description(&json_file_path) {
-                Ok(description_text) => println!("Description Text:\n{:?}", description_text),
+            match file_handler::read_and_generate_description(&config.json_file_path) {
+                Ok((title, description_text)) => {
+                    // Create issue and add to project
+                    match issue_creator
+                        .create_issue_and_add_to_project(
+                            &repo_id,
+                            &project_id,
+                            &title,
+                            &description_text,
+                        )
+                        .await
+                    {
+                        Ok(_) => info!("Successfully created issue and added to project."),
+                        Err(e) => eprintln!("Error creating issue and adding to project: {}", e),
+                    }
+                }
                 Err(e) => eprintln!("Error reading tasks from file: {}", e),
             }
         }
