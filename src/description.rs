@@ -9,6 +9,7 @@ pub fn generate_description(description: &Value, indent: usize) -> String {
                 let formatted_key = key.replace("_", " ");
                 match value {
                     Value::String(s) => {
+                        let s = s.replace("\"", "");
                         description_text.push_str(&format!(
                             "{}- **{}**: {}\n",
                             "  ".repeat(indent),
@@ -36,7 +37,7 @@ pub fn generate_description(description: &Value, indent: usize) -> String {
                         if arr.iter().all(|v| !matches!(v, Value::Object(_))) {
                             let arr_as_strings: Vec<String> = arr
                                 .iter()
-                                .map(|v| format!("{}", v))
+                                .map(|v| format!("{}", v).replace("\"", ""))
                                 .collect();
                             description_text.push_str(&format!(
                                 "{}- **{}**: [{}]\n",
