@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -51,18 +51,18 @@ jobs:
           target: ${{ matrix.target }}
           override: true
 
+      - name: Clean Target Directory
+        run: cargo clean
+
       - name: Build using cargo (ignore if it fails)
         continue-on-error: true
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release
+        run: cargo build --release --target ${{ matrix.target }}
 
       - name: List build artifacts
         run: ls -R target/
-        
+
       - name: Upload artifact (if build passed)
         uses: actions/upload-artifact@v2
         with:
           name: gh-issue-creator-${{ matrix.target }}
-          path: target/${{ matrix.target }}/release/gh-issue-creator*
+          path: target/${{ matrix.target }}/release/gh-issue-creator
