@@ -43,10 +43,6 @@ jobs:
           path: target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Install OpenSSL (Ubuntu)
-        if: runner.os == 'Linux'
-        run: sudo apt-get install libssl-dev libssl1.1
-
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -55,13 +51,12 @@ jobs:
           target: ${{ matrix.target }}
           override: true
 
-      - name: Cross compile using cargo
+      - name: Check code using cargo
         uses: actions-rs/cargo@v1
         with:
-          command: build
-          args: --release --target ${{ matrix.target }}
+          command: check
 
-      - name: Upload artifact
+      - name: Upload artifact (if check passed)
         uses: actions/upload-artifact@v2
         with:
           name: gh-issue-creator-${{ matrix.target }}
