@@ -58,7 +58,9 @@ jobs:
           command: build
           args: --release
 
-
+      - name: List build artifacts
+        run: ls -R target/
+        
       - name: Upload artifact (if build passed)
         uses: actions/upload-artifact@v2
         with:
