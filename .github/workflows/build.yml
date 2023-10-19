@@ -1,0 +1,64 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target:
+          - aarch64-unknown-linux-gnu
+          - i686-pc-windows-gnu
+          - i686-pc-windows-msvc
+          - i686-unknown-linux-gnu
+          - x86_64-apple-darwin
+          - x86_64-pc-windows-gnu
+          - x86_64-pc-windows-msvc
+          - x86_64-unknown-linux-gnu
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache cargo registry
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo index
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v2
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+
+      - name: Cross compile using cargo
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target ${{ matrix.target }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: gh-issue-creator-${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/gh-issue-creator*
