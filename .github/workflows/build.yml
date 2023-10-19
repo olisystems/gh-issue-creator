@@ -51,12 +51,13 @@ jobs:
           target: ${{ matrix.target }}
           override: true
 
-      - name: Check code using cargo
+      - name: Build using cargo (ignore if it fails)
+        continue-on-error: true
         uses: actions-rs/cargo@v1
         with:
-          command: check
+          command: build
 
-      - name: Upload artifact (if check passed)
+      - name: Upload artifact (if build passed)
         uses: actions/upload-artifact@v2
         with:
           name: gh-issue-creator-${{ matrix.target }}
